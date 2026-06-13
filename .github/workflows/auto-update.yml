@@ -1,0 +1,43 @@
+
+name: Auto-update & deploy
+on:
+  schedule:
+    - cron: '0 */12 * * *'
+    - cron: '0 0 * * 1'
+  workflow_dispatch:
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Fetch new errors
+        run: node scripts/fetchNewErrors.js
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+      - name: Generate static site
+        run: node scripts/generateSite.js
+      - name: Generate weekly report
+        run: node scripts/generateWeeklyReport.js
+      - name: Deploy to Cloudflare Pages
+        uses: cloudflare/pages-action@v1
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          projectName: cylma
+          directory: ./dist
+      - name: Send weekly report email
+        if: github.event.schedule == '0 0 * * 1'
+        uses: dawidd6/action-send-mail@v3
+        with:
+          server_address: smtp.gmail.com
+          server_port: 465
+          username: ${{ secrets.EMAIL_USERNAME }}
+          password: ${{ secrets.EMAIL_PASSWORD }}
+          subject: "cylma Weekly Report"
+          to: ${{ secrets.REPORT_EMAIL }}
+          from: Cylma Bot
+          body: file://weekly_report.txt
