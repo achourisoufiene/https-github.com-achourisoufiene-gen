@@ -1,1 +1,20 @@
-<footer class="border-t border-slate-800/60 bg-[#070a11] py-8 mt-12"><div class="max-w-6xl mx-auto px-4 text-center text-xs text-slate-500">© 2026 cylma</div></footer>
+<footer class="border-t border-slate-800/60 bg-[#070a11] py-8 mt-12">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 flex flex-col md:flex-row items-center justify-between gap-4 text-xs text-slate-500">
+        <span>© 2026 cylma — AI-generated solutions</span>
+        <div class="flex gap-4 flex-wrap">
+            <a href="/privacy.html" class="hover:text-slate-300">Privacy</a>
+            <a href="/terms.html" class="hover:text-slate-300">Terms</a>
+            <a href="/contact.html" class="hover:text-slate-300">Contact</a>
+            <a href="/disclaimer.html" class="hover:text-slate-300">Disclaimer</a>
+            <a href="/cookies.html" class="hover:text-slate-300">Cookies</a>
+        </div>
+    </div>
+</footer>
+<script>
+    document.getElementById('globalSearchInput')?.addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') {
+            const term = this.value.trim().toLowerCase();
+            if (term) window.location.href = '/?search=' + encodeURIComponent(term);
+        }
+    });
+</script>
